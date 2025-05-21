@@ -1,74 +1,24 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { fileURLToPath, URL } from 'node:url'
-// import eslintPlugin from 'vite-plugin-eslint'
-import app from './app_config'
-
-const GA_ID = import.meta.env.VITE_GA_ID as string
-
-export default {
-  ssr: true,
-  devtools: { enabled: true },
-  modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss', 'nuxt-gtag'],
+export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
-
-  gtag: {
-    id: GA_ID
-  },
+  devtools: { enabled: false },
   dir: {
     layouts: './src/layouts',
     pages: './src/pages',
     middleware: './src/middlewares',
     plugins: './src/plugins'
   },
-  components: [
-    '@/components',
-    '@/assets',
-    { path: '@/components/core', extensions: ['vue'] }
-  ],
-  css: ['@/assets/css/main.css'],
-  alias: {
-    '@': './src'
-  },
-  security: {
-    headers: {
-      crossOriginEmbedderPolicy: process.env.NODE_ENV === 'development' ? 'unsafe-none' : 'require-corp',
-      contentSecurityPolicy: {
-        connectSrc: false
-      }
-    }
-  },
-  vite: {
-    plugins: [
-      // eslintPlugin({ useEslintrc: true, exclude: ['**/node_modules/**'] })
-    ],
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url))
-      }
+  modules: ['@nuxt/eslint'],
+  css: ['~/src/assets/css/main.css'],
+    postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern',
-          silenceDeprecations: ['legacy-js-api']
-        }
-      }
-    }
   },
-  app,
   runtimeConfig: {
     public: {
-      posthogPublicKey: import.meta.env.VITE_POSTHOG_PUBLIC_KEY as string,
-      posthogHost: 'https://us.i.posthog.com',
-      GEMINI_API_KEY: import.meta.env.GEMINI_API_KEY
-    }
+      GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    },
   },
-  nitro: {
-    vercel: {
-      functions: {
-        maxDuration: 60
-      }
-    }
-  }
-  
-}
+})

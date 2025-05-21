@@ -1,4 +1,21 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
+  "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "WebWorker",
+      "DOM"
+    ],
+    "noImplicitAny": false,
+    "verbatimModuleSyntax": false,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "~/src/*": [
+        "./src/*"
+      ]
+    },
+    "baseUrl": "."
+  },
   "extends": "./.nuxt/tsconfig.json"
 }

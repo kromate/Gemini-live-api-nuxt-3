@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { Content, GenerativeContentBlob, Part } from "@google/generative-ai";
+import type { Content, GenerativeContentBlob, Part } from "@google/generative-ai";
 import { EventEmitter } from "eventemitter3";
-import { difference } from "lodash";
 import {
   ClientContentMessage,
   isInterrupted,
@@ -36,7 +35,7 @@ import {
   ToolCallCancellation,
   ToolResponseMessage,
   type LiveConfig,
-} from "../multimodal-live-types";
+} from "./multimodal-live-types";
 import { blobToJSON, base64ToArrayBuffer } from "./utils";
 
 /**
@@ -211,7 +210,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
         const base64s = audioParts.map((p) => p.inlineData?.data);
 
         // strip the audio parts out of the modelTurn
-        const otherParts = difference(parts, audioParts);
+        const otherParts = parts.filter((p) => !audioParts.includes(p));
         // console.log("otherParts", otherParts);
 
         base64s.forEach((b64) => {
