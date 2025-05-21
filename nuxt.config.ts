@@ -8,7 +8,7 @@ const GA_ID = import.meta.env.VITE_GA_ID as string
 export default {
   ssr: true,
   devtools: { enabled: true },
-  modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss', 'nuxt-gtag', '@nuxt/eslint', '@nuxt/fonts', '@nuxt/ui'],
+  modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss', 'nuxt-gtag'],
   compatibilityDate: '2025-05-15',
 
   gtag: {
