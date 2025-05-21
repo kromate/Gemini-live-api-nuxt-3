@@ -20,15 +20,23 @@ export type GetAudioContextOptions = AudioContextOptions & {
 
 const map: Map<string, AudioContext> = new Map();
 
+const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined";
+
 export const audioContext: (
   options?: GetAudioContextOptions,
 ) => Promise<AudioContext> = (() => {
-  const didInteract = new Promise((res) => {
-    window.addEventListener("pointerdown", res, { once: true });
-    window.addEventListener("keydown", res, { once: true });
-  });
+  let didInteract: Promise<void>;
+  if (isBrowser) {
+    didInteract = new Promise((res) => {
+      window.addEventListener("pointerdown", () => res(), { once: true });
+      window.addEventListener("keydown", () => res(), { once: true });
+    });
+  }
 
   return async (options?: GetAudioContextOptions) => {
+    if (!isBrowser) {
+      throw new Error("audioContext can only be used in the browser.");
+    }
     try {
       const a = new Audio();
       a.src =
@@ -62,8 +70,11 @@ export const audioContext: (
   };
 })();
 
-export const blobToJSON = (blob: Blob) =>
-  new Promise((resolve, reject) => {
+export const blobToJSON = (blob: Blob) => {
+  if (!isBrowser) {
+    return Promise.reject("blobToJSON can only be used in the browser.");
+  }
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.result) {
@@ -75,8 +86,12 @@ export const blobToJSON = (blob: Blob) =>
     };
     reader.readAsText(blob);
   });
+};
 
 export function base64ToArrayBuffer(base64: string) {
+  if (!isBrowser) {
+    throw new Error("base64ToArrayBuffer can only be used in the browser.");
+  }
   var binaryString = atob(base64);
   var bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
